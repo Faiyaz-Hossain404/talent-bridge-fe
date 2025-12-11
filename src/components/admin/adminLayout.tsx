@@ -2,6 +2,7 @@ import { Outlet } from "react-router";
 import { useState, useEffect } from "react";
 import AdminSidebar from "./adminSidebar";
 import Navbar from "../layout/Navbar";
+import { motion } from "framer-motion";
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
@@ -24,14 +25,16 @@ export default function AdminLayout() {
       <Navbar />
 
       <AdminSidebar onWidthChange={setSidebarWidth} />
-      <main
-        className="pt-14 transition-all duration-300"
+      <motion.main
+        layout="position"
         style={{ marginLeft: isDesktop ? sidebarWidth : 0 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="pt-14"
       >
         <div className="p-6">
           <Outlet />
         </div>
-      </main>
+      </motion.main>
     </div>
   );
 }

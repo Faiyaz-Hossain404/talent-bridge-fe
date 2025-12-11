@@ -5,6 +5,7 @@ import RecentApplicants from "../../components/admin/recentApplicants";
 import { useQuery } from "@tanstack/react-query";
 import { fetchDashboardData } from "../../services/adminDashboardService";
 import type { DashboardStats, RecentApplicant } from "../../types/admin.types";
+import { useEffect, useState } from "react";
 
 type DashboardData = {
   stats: DashboardStats;
@@ -18,8 +19,29 @@ export default function AdminDashboardPage() {
     staleTime: 1000 * 60 * 5, // 5 min cache
   });
 
-  // Early returns to safely handle loading/error/undefined data
-  if (isLoading) return <p className="p-6">Loading dashboard...</p>;
+  const [showSkeleton, setShowSkeleton] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSkeleton(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // if (isLoading) return <p className="p-6">Loading dashboard...</p>;
+  if (isLoading || showSkeleton) {
+    return (
+      <section className="pt-10 pb-16 space-y-6 p-6">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+          <DashboardStatsComponent isLoading={true} />
+        </div>
+        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+          <RecentApplicants applicants={[]} isLoading={true} />
+        </div>
+      </section>
+    );
+  }
   if (error)
     return <p className="p-6 text-red-600">Failed to load dashboard.</p>;
   if (!data) return <p className="p-6">No data available</p>;
@@ -49,19 +71,10 @@ export default function AdminDashboardPage() {
           {/* Refresh button */}
           <button
             onClick={() => refetch()}
-            className="rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-medium shadow-sm hover:bg-zinc-50"
+            className="rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-medium shadow-sm hover:bg-zinc-50 cursor-pointer"
           >
             Refresh
           </button>
-        </motion.div>
-
-        {/* Info Alert */}
-        <motion.div
-          variants={fadeUp}
-          className="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800 shadow-sm"
-        >
-          ℹ️ Dashboard data is cached. Refresh will fetch fresh data from
-          backend.
         </motion.div>
 
         {/* Stats Card */}

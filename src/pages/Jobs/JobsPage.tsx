@@ -135,8 +135,8 @@ export default function JobsPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <section className="flex-1 pt-28 pb-16 px-4">
-        <div className="mx-auto max-w-7xl">
+      <section className="flex-1 pt-28 pb-16">
+        <div className="mx-auto max-w-7xl px-4">
           {/* Header + search */}
           <motion.div
             variants={stagger}

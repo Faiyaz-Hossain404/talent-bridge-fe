@@ -13,14 +13,14 @@ export default function RecentApplicants({
 }: RecentApplicantsProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "Received":
+      case "pending":
+        return "bg-yellow-100 text-yellow-700";
+      case "reviewing":
         return "bg-blue-100 text-blue-700";
-      case "Shortlisted":
-        return "bg-green-100 text-green-700";
-      case "Rejected":
+      case "rejected":
         return "bg-red-100 text-red-700";
-      case "Hired":
-        return "bg-purple-100 text-purple-700";
+      case "accepted":
+        return "bg-green-100 text-green-700";
       default:
         return "bg-zinc-100 text-zinc-700";
     }
@@ -59,7 +59,7 @@ export default function RecentApplicants({
         <Link
           key={applicant.id}
           to={`/admin/applications/${applicant.id}`}
-          className="block p-4 transition-colors duration-150 hover:bg-zinc-100 dark:hover:bg-zinc-700"
+          className="block p-4 transition-colors rounded-xl duration-150 hover:bg-zinc-800"
         >
           <div className="flex items-center justify-between">
             <div className="flex-1">
@@ -68,7 +68,7 @@ export default function RecentApplicants({
                   {applicant.applicantName?.charAt(0).toUpperCase() ?? "U"}
                 </div>
                 <div>
-                  <p className="font-medium text-zinc-900 dark:text-zinc-100">
+                  <p className="font-medium text-zinc-900 dark:text-zinc-300">
                     {applicant.applicantName ?? "Unknown"}
                   </p>
                   <p className="text-sm text-zinc-600 dark:text-zinc-300">

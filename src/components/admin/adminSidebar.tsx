@@ -7,6 +7,8 @@ import JobsIcon from "../../assets/JobsIcon.png";
 import UsersIcon from "../../assets/UsersIcon.png";
 import ApplicationIcon from "../../assets/ApplicationIcon.png";
 import DashboardIcon from "../../assets/DashboardIcon.png";
+import SidebarOpen from "../../assets/SidebarOpen.png";
+import SidebarClose from "../../assets//SidebarClose.png";
 
 interface SidebarLink {
   name: string;
@@ -51,16 +53,22 @@ export default function AdminSidebar({ onWidthChange }: AdminSidebarProps) {
     <>
       {/* DESKTOP SIDEBAR */}
       <motion.aside
+        layout="position"
         animate={{ width: desktopCollapsed ? 81 : 215 }}
-        transition={{ duration: 0.3 }}
-        className="hidden md:flex fixed left-0 top-14 h-[calc(100vh-3.5rem)] border-r border-zinc-200 bg-white flex-col"
+        transition={{ duration: 0.25, ease: "easeInOut" }}
+        style={{ willChange: "width" }}
+        className="hidden md:flex fixed left-0 top-14 h-[calc(100vh-3.5rem)] border-r border-zinc-200 bg-white flex-col overflow-hidden"
       >
         {/* Collapse Button */}
         <button
           onClick={() => setDesktopCollapsed(!desktopCollapsed)}
-          className="mx-4 my-4 rounded-lg border border-zinc-300 bg-white p-2 text-zinc-600 hover:bg-zinc-50"
+          className="mx-4 my-4 rounded-lg border border-zinc-300 bg-white p-2 text-zinc-600 hover:bg-zinc-50 cursor-pointer"
         >
-          {desktopCollapsed ? "☰" : "✕"}
+          {desktopCollapsed ? (
+            <img src={SidebarClose} className="w-6 h-6" />
+          ) : (
+            <img src={SidebarOpen} className="mx-auto w-6 h-6" />
+          )}
         </button>
 
         {/* Navigation */}
@@ -95,7 +103,7 @@ export default function AdminSidebar({ onWidthChange }: AdminSidebarProps) {
         {/* LOGOUT BUTTON */}
         <button
           onClick={handleLogout}
-          className="m-4 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100"
+          className="m-4 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100 cursor-pointer"
         >
           {!desktopCollapsed ? "Logout" : "⎋"}
         </button>

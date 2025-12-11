@@ -25,11 +25,11 @@ export default function DashboardStatsComponent({
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="h-28 rounded-xl bg-zinc-100 animate-pulse"
+              className="h-28 rounded-xl bg-zinc-200 border border-zinc-200 animate-pulse"
             />
           ))}
         </div>
-        <div className="h-64 rounded-xl bg-zinc-100 animate-pulse" />
+        <div className="h-64 rounded-xl bg-zinc-200 border border-zinc-200 animate-pulse" />
       </div>
     );
   }

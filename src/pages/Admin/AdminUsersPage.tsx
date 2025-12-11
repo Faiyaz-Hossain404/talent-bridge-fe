@@ -232,7 +232,7 @@ export default function AdminUsersPage() {
                             <button
                               onClick={() => setDeleteConfirm(user.id)}
                               disabled={user.roleId === 1}
-                              className="inline-flex items-center gap-1 rounded-lg bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="inline-flex items-center gap-1 rounded-lg bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                               title={
                                 user.roleId === 1
                                   ? "Cannot delete admin users"

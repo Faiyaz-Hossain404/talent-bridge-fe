@@ -67,22 +67,22 @@ export default function Navbar() {
     }
   };
 
-  // -------------------------------------------------------------
-  // ADMIN NAVBAR -> ONLY LOGO (no menu)
-  // -------------------------------------------------------------
+  const isActive = (path: string) => location.pathname === path;
+
   if (isAdminRoute) {
     return (
-      <header className="fixed inset-x-0 top-0 z-50 bg-white/70 backdrop-blur border-b border-zinc-200 dark:bg-zinc-900/70 dark:border-zinc-700">
+      <header className="fixed inset-x-0 top-0 z-50 bg-white/40 backdrop-blur-md border-b border-zinc-200">
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
           <Link
             to="/admin/dashboard"
             className="flex items-center gap-2"
             onClick={handleLogoClick}
           >
-            <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center">
+            <div className="h-8 w-8 rounded-xl bg-linear-to-tr from-blue-600 to-indigo-500 flex items-center justify-center">
               <span className="text-white font-bold text-sm">H</span>
             </div>
-            <span className="text-xl font-bold tracking-tight dark:text-white">
+
+            <span className="text-2xl font-semibold tracking-tight font-serif text-zinc-900 cursor-pointer">
               Hirely
             </span>
           </Link>
@@ -91,13 +91,11 @@ export default function Navbar() {
     );
   }
 
-  // -------------------------------------------------------------
-  // USER DASHBOARD NAVBAR (minimal navigation - for authenticated users on non-landing pages)
-  // -------------------------------------------------------------
+  //user dashboard navbar, for auth users on landing pages
   if (isAuthenticated && !isLandingPage && !isAuthPage) {
     return (
       <>
-        <header className="fixed inset-x-0 top-0 z-50 bg-white/70 backdrop-blur border-b border-zinc-200 dark:bg-zinc-900/70 dark:border-zinc-700">
+        <header className="fixed inset-x-0 top-0 z-50 bg-white/40 backdrop-blur-md border-b border-zinc-200">
           <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
             {/* Logo */}
             <Link
@@ -105,10 +103,11 @@ export default function Navbar() {
               className="flex items-center gap-2"
               onClick={handleLogoClick}
             >
-              <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center">
+              <div className="h-8 w-8 rounded-xl bg-linear-to-tr from-blue-600 to-indigo-500 flex items-center justify-center">
                 <span className="text-white font-bold text-sm">H</span>
               </div>
-              <span className="text-xl font-bold tracking-tight dark:text-white">
+
+              <span className="text-2xl font-semibold tracking-tight font-serif text-zinc-900 cursor-pointer">
                 Hirely
               </span>
             </Link>
@@ -118,7 +117,11 @@ export default function Navbar() {
               <Link
                 to="/jobs"
                 onClick={handleJobsClick}
-                className="text-sm text-zinc-600 hover:text-zinc-900 transition-colors dark:text-zinc-400 dark:hover:text-white"
+                className={`text-sm transition-all ${
+                  isActive("/jobs")
+                    ? "text-indigo-600 text-base font-semibold"
+                    : "px-2 py-1 rounded-md text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
+                }`}
               >
                 Jobs
               </Link>
@@ -129,7 +132,11 @@ export default function Navbar() {
                   <Link
                     to="/dashboard"
                     onClick={() => setMobileOpen(false)}
-                    className="text-sm text-zinc-600 hover:text-zinc-900 transition-colors dark:text-zinc-400 dark:hover:text-white"
+                    className={`text-sm transition-all ${
+                      isActive("/dashboard")
+                        ? "text-indigo-600 text-base font-semibold"
+                        : "px-2 py-1 rounded-md text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
+                    }`}
                   >
                     Dashboard
                   </Link>
@@ -138,14 +145,18 @@ export default function Navbar() {
                 <Link
                   to="/profile"
                   onClick={() => setMobileOpen(false)}
-                  className="text-sm text-zinc-600 hover:text-zinc-900 transition-colors dark:text-zinc-400 dark:hover:text-white"
+                  className={`text-sm transition-all ${
+                    isActive("/profile")
+                      ? "text-indigo-600 text-base font-semibold"
+                      : "px-2 py-1 rounded-md text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
+                  }`}
                 >
                   Profile
                 </Link>
 
                 <button
                   onClick={handleLogout}
-                  className="text-sm text-red-600 hover:text-red-700 font-medium cursor-pointer transition-colors dark:text-red-400 dark:hover:text-red-300"
+                  className="text-sm text-red-600 hover:text-red-700 font-medium cursor-pointer transition-colors"
                 >
                   Logout
                 </button>
@@ -155,7 +166,7 @@ export default function Navbar() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="rounded-lg p-2 text-zinc-600 hover:bg-zinc-100 md:hidden dark:text-zinc-400 dark:hover:bg-zinc-800"
+              className="rounded-lg p-2 text-zinc-700 hover:bg-zinc-100 md:hidden"
             >
               {mobileOpen ? "✕" : "☰"}
             </button>
@@ -164,12 +175,16 @@ export default function Navbar() {
 
         {/* Mobile Menu Overlay */}
         {mobileOpen && (
-          <div className="fixed inset-0 top-16 z-40 bg-white md:hidden dark:bg-zinc-900">
+          <div className="fixed inset-0 top-16 z-40 bg-white md:hidden">
             <div className="flex flex-col space-y-6 p-6">
               <Link
                 to="/jobs"
                 onClick={handleJobsClick}
-                className="text-lg font-medium text-zinc-900 hover:text-indigo-600 transition-colors dark:text-white dark:hover:text-indigo-400"
+                className={`text-lg font-medium transition-all ${
+                  isActive("/jobs")
+                    ? "text-indigo-600 text-xl font-semibold"
+                    : "text-zinc-900 hover:text-indigo-600"
+                }`}
               >
                 Jobs
               </Link>
@@ -179,7 +194,11 @@ export default function Navbar() {
                 <Link
                   to="/dashboard"
                   onClick={() => setMobileOpen(false)}
-                  className="text-lg font-medium text-zinc-900 hover:text-indigo-600 transition-colors dark:text-white dark:hover:text-indigo-400"
+                  className={`text-lg font-medium transition-all ${
+                    isActive("/dashboard")
+                      ? "text-indigo-600 text-xl font-semibold"
+                      : "text-zinc-900 hover:text-indigo-600"
+                  }`}
                 >
                   Dashboard
                 </Link>
@@ -188,14 +207,18 @@ export default function Navbar() {
               <Link
                 to="/profile"
                 onClick={() => setMobileOpen(false)}
-                className="text-lg font-medium text-zinc-900 hover:text-indigo-600 transition-colors dark:text-white dark:hover:text-indigo-400"
+                className={`text-lg font-medium transition-all ${
+                  isActive("/profile")
+                    ? "text-indigo-600 text-xl font-semibold"
+                    : "text-zinc-900 hover:text-indigo-600"
+                }`}
               >
                 Profile
               </Link>
 
               <button
                 onClick={handleLogout}
-                className="text-left text-lg font-medium text-red-600 hover:text-red-700 transition-colors dark:text-red-400 dark:hover:text-red-300"
+                className="text-left text-lg font-medium text-red-600 hover:text-red-700"
               >
                 Logout
               </button>
@@ -206,12 +229,10 @@ export default function Navbar() {
     );
   }
 
-  // -------------------------------------------------------------
-  // LANDING PAGE NAVBAR (full navigation - for landing page and unauthenticated users)
-  // -------------------------------------------------------------
+  //to landing page for unauth
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 bg-white/70 backdrop-blur border-b border-zinc-200 dark:bg-zinc-900/70 dark:border-zinc-700">
+      <header className="fixed inset-x-0 top-0 z-50 bg-white/40 backdrop-blur-md border-b border-zinc-200">
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
           {/* Logo */}
           <Link
@@ -219,10 +240,11 @@ export default function Navbar() {
             className="flex items-center gap-2"
             onClick={handleLogoClick}
           >
-            <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center">
+            <div className="h-8 w-8 rounded-xl bg-linear-to-tr from-blue-600 to-indigo-500 flex items-center justify-center">
               <span className="text-white font-bold text-sm">H</span>
             </div>
-            <span className="text-xl font-bold tracking-tight dark:text-white">
+
+            <span className="text-2xl font-semibold tracking-tight font-serif text-zinc-900 cursor-pointer">
               Hirely
             </span>
           </Link>
@@ -231,14 +253,14 @@ export default function Navbar() {
           <div className="hidden items-center gap-6 md:flex">
             <button
               onClick={() => handleAnchorClick("overview")}
-              className="text-sm text-zinc-600 hover:text-zinc-900 transition-colors dark:text-zinc-400 dark:hover:text-white"
+              className="px-2 py-1 rounded-md text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
             >
               Overview
             </button>
 
             <button
               onClick={() => handleAnchorClick("company")}
-              className="text-sm text-zinc-600 hover:text-zinc-900 transition-colors dark:text-zinc-400 dark:hover:text-white"
+              className="px-2 py-1 rounded-md text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
             >
               Company
             </button>
@@ -246,7 +268,11 @@ export default function Navbar() {
             <Link
               to="/jobs"
               onClick={handleJobsClick}
-              className="text-sm text-zinc-600 hover:text-zinc-900 transition-colors dark:text-zinc-400 dark:hover:text-white"
+              className={`text-sm transition-all ${
+                isActive("/jobs")
+                  ? "text-indigo-600 text-base font-semibold"
+                  : "px-2 py-1 rounded-md text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
+              }`}
             >
               Jobs
             </Link>
@@ -259,7 +285,11 @@ export default function Navbar() {
                   <Link
                     to="/admin/dashboard"
                     onClick={() => setMobileOpen(false)}
-                    className="text-sm text-zinc-600 hover:text-zinc-900 transition-colors dark:text-zinc-400 dark:hover:text-white"
+                    className={`text-sm transition-all ${
+                      isActive("/admin/dashboard")
+                        ? "text-indigo-600 text-base font-semibold"
+                        : "px-2 py-1 rounded-md text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
+                    }`}
                   >
                     Admin Dashboard
                   </Link>
@@ -270,7 +300,11 @@ export default function Navbar() {
                   <Link
                     to="/dashboard"
                     onClick={() => setMobileOpen(false)}
-                    className="text-sm text-zinc-600 hover:text-zinc-900 transition-colors dark:text-zinc-400 dark:hover:text-white"
+                    className={`text-sm transition-all ${
+                      isActive("/dashboard")
+                        ? "text-indigo-600 text-base font-semibold"
+                        : "px-2 py-1 rounded-md text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
+                    }`}
                   >
                     Dashboard
                   </Link>
@@ -279,14 +313,18 @@ export default function Navbar() {
                 <Link
                   to="/profile"
                   onClick={() => setMobileOpen(false)}
-                  className="text-sm text-zinc-600 hover:text-zinc-900 transition-colors dark:text-zinc-400 dark:hover:text-white"
+                  className={`text-sm transition-all ${
+                    isActive("/profile")
+                      ? "text-indigo-600 text-base font-semibold"
+                      : "px-2 py-1 rounded-md text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
+                  }`}
                 >
                   Profile
                 </Link>
 
                 <button
                   onClick={handleLogout}
-                  className="text-sm text-red-600 hover:text-red-700 font-medium cursor-pointer transition-colors dark:text-red-400 dark:hover:text-red-300"
+                  className="text-sm text-red-600 hover:text-red-700 font-medium transition-colors"
                 >
                   Logout
                 </button>
@@ -295,7 +333,11 @@ export default function Navbar() {
               <Link
                 to="/auth"
                 onClick={() => setMobileOpen(false)}
-                className="text-sm text-zinc-600 hover:text-zinc-900 transition-colors dark:text-zinc-400 dark:hover:text-white"
+                className={`text-sm transition-all ${
+                  isActive("/auth")
+                    ? "text-indigo-600 text-base font-semibold"
+                    : "px-2 py-1 rounded-md text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
+                }`}
               >
                 Signup/Login
               </Link>
@@ -305,7 +347,7 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="rounded-lg p-2 text-zinc-600 hover:bg-zinc-100 md:hidden dark:text-zinc-400 dark:hover:bg-zinc-800"
+            className="rounded-lg p-2 text-zinc-700 hover:bg-zinc-100 md:hidden"
           >
             {mobileOpen ? "✕" : "☰"}
           </button>
@@ -314,18 +356,18 @@ export default function Navbar() {
 
       {/* Mobile Menu Overlay */}
       {mobileOpen && (
-        <div className="fixed inset-0 top-16 z-40 bg-white md:hidden dark:bg-zinc-900">
+        <div className="fixed inset-0 top-16 z-40 bg-white md:hidden">
           <div className="flex flex-col space-y-6 p-6">
             <button
               onClick={() => handleAnchorClick("overview")}
-              className="text-left text-lg font-medium text-zinc-900 hover:text-indigo-600 transition-colors dark:text-white dark:hover:text-indigo-400"
+              className="text-left text-lg font-medium text-zinc-900 hover:text-indigo-600 transition-colors"
             >
               Overview
             </button>
 
             <button
               onClick={() => handleAnchorClick("company")}
-              className="text-left text-lg font-medium text-zinc-900 hover:text-indigo-600 transition-colors dark:text-white dark:hover:text-indigo-400"
+              className="text-left text-lg font-medium text-zinc-900 hover:text-indigo-600 transition-colors"
             >
               Company
             </button>
@@ -333,7 +375,11 @@ export default function Navbar() {
             <Link
               to="/jobs"
               onClick={handleJobsClick}
-              className="text-lg font-medium text-zinc-900 hover:text-indigo-600 transition-colors dark:text-white dark:hover:text-indigo-400"
+              className={`text-lg font-medium transition-all ${
+                isActive("/jobs")
+                  ? "text-indigo-600 text-xl font-semibold"
+                  : "text-zinc-900 hover:text-indigo-600"
+              }`}
             >
               Jobs
             </Link>
@@ -346,7 +392,11 @@ export default function Navbar() {
                   <Link
                     to="/admin/dashboard"
                     onClick={() => setMobileOpen(false)}
-                    className="text-lg font-medium text-zinc-900 hover:text-indigo-600 transition-colors dark:text-white dark:hover:text-indigo-400"
+                    className={`text-lg font-medium transition-all ${
+                      isActive("/admin/dashboard")
+                        ? "text-indigo-600 text-xl font-semibold"
+                        : "text-zinc-900 hover:text-indigo-600"
+                    }`}
                   >
                     Admin Dashboard
                   </Link>
@@ -357,7 +407,11 @@ export default function Navbar() {
                   <Link
                     to="/dashboard"
                     onClick={() => setMobileOpen(false)}
-                    className="text-lg font-medium text-zinc-900 hover:text-indigo-600 transition-colors dark:text-white dark:hover:text-indigo-400"
+                    className={`text-lg font-medium transition-all ${
+                      isActive("/dashboard")
+                        ? "text-indigo-600 text-xl font-semibold"
+                        : "text-zinc-900 hover:text-indigo-600"
+                    }`}
                   >
                     Dashboard
                   </Link>
@@ -366,14 +420,18 @@ export default function Navbar() {
                 <Link
                   to="/profile"
                   onClick={() => setMobileOpen(false)}
-                  className="text-lg font-medium text-zinc-900 hover:text-indigo-600 transition-colors dark:text-white dark:hover:text-indigo-400"
+                  className={`text-lg font-medium transition-all ${
+                    isActive("/profile")
+                      ? "text-indigo-600 text-xl font-semibold"
+                      : "text-zinc-900 hover:text-indigo-600"
+                  }`}
                 >
                   Profile
                 </Link>
 
                 <button
                   onClick={handleLogout}
-                  className="text-left text-lg font-medium text-red-600 hover:text-red-700 transition-colors dark:text-red-400 dark:hover:text-red-300"
+                  className="text-left text-lg font-medium text-red-600 hover:text-red-700 transition-colors"
                 >
                   Logout
                 </button>
@@ -382,7 +440,11 @@ export default function Navbar() {
               <Link
                 to="/auth"
                 onClick={() => setMobileOpen(false)}
-                className="text-lg font-medium text-zinc-900 hover:text-indigo-600 transition-colors dark:text-white dark:hover:text-indigo-400"
+                className={`text-lg font-medium transition-all ${
+                  isActive("/auth")
+                    ? "text-indigo-600 text-xl font-semibold"
+                    : "text-zinc-900 hover:text-indigo-600"
+                }`}
               >
                 Signup/Login
               </Link>

@@ -68,17 +68,6 @@ export default function AdminJobsPage() {
 
   const hasSearch = searchParams.search.trim().length > 0;
 
-  // if (isLoading && jobs.length === 0) {
-  //   return (
-  //     <div className="min-h-screen pt-10 flex items-center justify-center">
-  //       <div className="text-center">
-  //         <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
-  //         <p className="mt-4 text-zinc-600 font-medium">Loading jobs...</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
   const jobSortOptions = [
     { value: "newest", label: "Newest" },
     { value: "oldest", label: "Oldest" },
@@ -270,7 +259,7 @@ export default function AdminJobsPage() {
                             </Link>
                             <button
                               onClick={() => setDeleteConfirm(job.id!)}
-                              className="inline-flex items-center gap-1 rounded-lg bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100 transition-colors"
+                              className="inline-flex items-center gap-1 rounded-lg bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100 transition-colors cursor-pointer"
                             >
                               <img
                                 src={DeleteIcon}
@@ -299,7 +288,7 @@ export default function AdminJobsPage() {
                         handlePageChange(pagination.currentPage - 1)
                       }
                       disabled={pagination.currentPage === 1 || isLoading}
-                      className="px-4 py-2 rounded-lg border border-zinc-300 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="px-4 py-2 rounded-lg border border-zinc-300 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                     >
                       Previous
                     </button>
@@ -311,7 +300,7 @@ export default function AdminJobsPage() {
                         pagination.currentPage === pagination.totalPages ||
                         isLoading
                       }
-                      className="px-4 py-2 rounded-lg bg-indigo-600 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="px-4 py-2 rounded-lg bg-indigo-600 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                     >
                       Next
                     </button>
