@@ -8,6 +8,9 @@ import {
 } from "recharts";
 import { Link } from "react-router-dom";
 import type { DashboardStats, PieChartData } from "../../types/admin.types";
+import ApplicationIcon from "../../assets/ApplicationIcon.png";
+import UsersIcon from "../../assets/UsersIcon.png";
+import JobsIcon from "../../assets/JobsIcon.png";
 
 interface DashboardStatsProps {
   stats?: DashboardStats;
@@ -57,21 +60,21 @@ export default function DashboardStatsComponent({
     {
       label: "Total Jobs",
       value: stats.totalJobs,
-      icon: "💼",
+      icon: JobsIcon,
       color: "bg-blue-50 text-blue-700",
       link: "/admin/jobs",
     },
     {
       label: "Total Users",
       value: stats.totalUsers,
-      icon: "👥",
+      icon: UsersIcon,
       color: "bg-green-50 text-green-700",
       link: "/admin/users",
     },
     {
       label: "Total Applications",
       value: stats.totalApplications,
-      icon: "📝",
+      icon: ApplicationIcon,
       color: "bg-indigo-50 text-indigo-700",
       link: "/admin/applications",
     },
@@ -87,14 +90,14 @@ export default function DashboardStatsComponent({
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-zinc-600">{card.label}</p>
-                  <p className="mt-2 text-3xl font-bold text-zinc-900">
+                  <p className="text-3xl font-bold text-zinc-900">
                     {card.value}
                   </p>
                 </div>
                 <div
-                  className={`flex h-12 w-12 items-center justify-center rounded-lg ${card.color}`}
+                  className={`flex h-12 w-12 items-center justify-center rounded-lg`}
                 >
-                  <span className="text-2xl">{card.icon}</span>
+                  <img src={card.icon} className="w-12 h-12" />
                 </div>
               </div>
             </div>
