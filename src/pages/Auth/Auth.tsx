@@ -88,7 +88,7 @@ export default function Auth() {
                 setActiveTab("signup");
                 clearError();
               }}
-              className={`relative flex-1 px-6 py-4 text-sm font-semibold transition ${
+              className={`relative flex-1 px-6 py-4 text-sm font-semibold transition cursor-pointer ${
                 activeTab === "signup"
                   ? "text-zinc-900"
                   : "text-zinc-500 hover:text-zinc-700"
@@ -108,7 +108,7 @@ export default function Auth() {
                 setActiveTab("login");
                 clearError();
               }}
-              className={`relative flex-1 px-6 py-4 text-sm font-semibold transition ${
+              className={`relative flex-1 px-6 py-4 text-sm font-semibold transition cursor-pointer ${
                 activeTab === "login"
                   ? "text-zinc-900"
                   : "text-zinc-500 hover:text-zinc-700"
@@ -299,7 +299,7 @@ export default function Auth() {
               Already have an account?{" "}
               <button
                 onClick={() => setActiveTab("login")}
-                className="font-semibold text-indigo-600 hover:text-indigo-500"
+                className="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer"
               >
                 Log in
               </button>
@@ -309,7 +309,7 @@ export default function Auth() {
               Don't have an account?{" "}
               <button
                 onClick={() => setActiveTab("signup")}
-                className="font-semibold text-indigo-600 hover:text-indigo-500"
+                className="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer"
               >
                 Sign up
               </button>
