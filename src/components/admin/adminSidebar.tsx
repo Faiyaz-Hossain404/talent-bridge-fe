@@ -9,16 +9,10 @@ import ApplicationIcon from "../../assets/ApplicationIcon.png";
 import DashboardIcon from "../../assets/DashboardIcon.png";
 import SidebarOpen from "../../assets/SidebarOpen.png";
 import SidebarClose from "../../assets//SidebarClose.png";
-
-interface SidebarLink {
-  name: string;
-  path: string;
-  icon: string;
-}
-
-interface AdminSidebarProps {
-  onWidthChange?: (width: number) => void;
-}
+import type {
+  AdminSidebarProps,
+  SidebarLink,
+} from "../../types/adminSidebar.types";
 
 const links: SidebarLink[] = [
   { name: "Dashboard", path: "/admin/dashboard", icon: DashboardIcon },
@@ -51,7 +45,7 @@ export default function AdminSidebar({ onWidthChange }: AdminSidebarProps) {
 
   return (
     <>
-      {/* DESKTOP SIDEBAR */}
+      {/* desktop sidebar */}
       <motion.aside
         layout="position"
         animate={{ width: desktopCollapsed ? 81 : 215 }}

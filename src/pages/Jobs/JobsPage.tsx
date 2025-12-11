@@ -294,7 +294,7 @@ export default function JobsPage() {
               </div>
 
               <button
-                className="rounded-lg border px-3 py-2 text-sm disabled:opacity-50"
+                className="rounded-lg border px-3 py-2 text-sm disabled:opacity-50 cursor-pointer"
                 disabled={currentPageFromUrl >= totalPages}
                 onClick={() => goTo(currentPageFromUrl + 1)}
               >
