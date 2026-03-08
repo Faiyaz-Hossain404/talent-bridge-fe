@@ -8,7 +8,7 @@ export default function Auth() {
   const navigate = useNavigate();
   const { signup, login, isLoading, error, clearError } = useAuthStore();
 
-  const [activeTab, setActiveTab] = useState<"signup" | "login">("signup");
+  const [activeTab, setActiveTab] = useState<"signup" | "login">("login");
 
   // Signup form state
   const [signupForm, setSignupForm] = useState({
@@ -23,27 +23,39 @@ export default function Auth() {
     password: "",
   });
 
-  // Handle signup
   const handleSignup = async (e: FormEvent) => {
     e.preventDefault();
     clearError();
 
     try {
-      await signup(signupForm.name, signupForm.email, signupForm.password);
-      navigate("/profile");
+      const user = await signup(
+        signupForm.name,
+        signupForm.email,
+        signupForm.password
+      );
+      // Role-based redirect
+      if (user && user.roleId === 1) {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/profile");
+      }
     } catch {
       // Error is handled by store
     }
   };
 
-  // Handle login
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     clearError();
 
     try {
-      await login(loginForm.email, loginForm.password);
-      navigate("/profile");
+      const user = await login(loginForm.email, loginForm.password);
+      // Role-based redirect
+      if (user && user.roleId === 1) {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/jobs");
+      }
     } catch {
       // Error is handled by store
     }
@@ -58,7 +70,6 @@ export default function Auth() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-linear-to-b from-white to-zinc-50 pt-20">
-      {/* Background decorations */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-40 right-0 h-72 w-72 rounded-full bg-blue-100 blur-3xl" />
         <div className="absolute -left-20 top-20 h-96 w-96 rounded-full bg-indigo-100 blur-3xl" />
@@ -77,7 +88,7 @@ export default function Auth() {
                 setActiveTab("signup");
                 clearError();
               }}
-              className={`relative flex-1 px-6 py-4 text-sm font-semibold transition ${
+              className={`relative flex-1 px-6 py-4 text-sm font-semibold transition cursor-pointer ${
                 activeTab === "signup"
                   ? "text-zinc-900"
                   : "text-zinc-500 hover:text-zinc-700"
@@ -97,7 +108,7 @@ export default function Auth() {
                 setActiveTab("login");
                 clearError();
               }}
-              className={`relative flex-1 px-6 py-4 text-sm font-semibold transition ${
+              className={`relative flex-1 px-6 py-4 text-sm font-semibold transition cursor-pointer ${
                 activeTab === "login"
                   ? "text-zinc-900"
                   : "text-zinc-500 hover:text-zinc-700"
@@ -288,7 +299,7 @@ export default function Auth() {
               Already have an account?{" "}
               <button
                 onClick={() => setActiveTab("login")}
-                className="font-semibold text-indigo-600 hover:text-indigo-500"
+                className="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer"
               >
                 Log in
               </button>
@@ -298,7 +309,7 @@ export default function Auth() {
               Don't have an account?{" "}
               <button
                 onClick={() => setActiveTab("signup")}
-                className="font-semibold text-indigo-600 hover:text-indigo-500"
+                className="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer"
               >
                 Sign up
               </button>

@@ -1,4 +1,3 @@
-// src/pages/Jobs/JobDetailsPage.tsx
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import {
@@ -21,6 +20,7 @@ import CoverLetterModal from "../../components/application/CoverLetterModal";
 
 export default function JobDetailsPage() {
   const { id } = useParams<{ id: string }>();
+  const idNum = id ? Number(id) : undefined;
   const navigate = useNavigate();
 
   const selectedJob = useJobStore(selectSelectedJob);
@@ -33,9 +33,14 @@ export default function JobDetailsPage() {
   const applyToJob = useApplicationStore((state) => state.applyToJob);
   const setApplyingJob = useApplicationStore((state) => state.setApplyingJob);
   const applyingJobs = useApplicationStore((state) => state.applyingJobs);
+  const myApplications = useApplicationStore((state) => state.myApplications); // ADD THIS
+  const fetchMyApplications = useApplicationStore(
+    (state) => state.fetchMyApplications
+  ); // ADD THIS
   const user = useAuthStore((state) => state.user);
 
-  const cachedJob = useJobStore(selectJobById(id || ""));
+  const jobState = useJobStore();
+  const cachedJob = idNum ? selectJobById(idNum)(jobState) : undefined;
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -49,11 +54,18 @@ export default function JobDetailsPage() {
       return;
     }
 
-    if (!selectedJob || selectedJob.id !== id) {
-      fetchJobById(id);
+    if (!selectedJob || selectedJob.id !== Number(id)) {
+      fetchJobById(Number(id));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  useEffect(() => {
+    // Fetch user applications when component mounts
+    if (user) {
+      fetchMyApplications();
+    }
+  }, [user, fetchMyApplications]);
 
   useEffect(() => {
     return () => {
@@ -62,9 +74,21 @@ export default function JobDetailsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // ADD THIS FUNCTION: Check if user has already applied to this job
+  const hasApplied = () => {
+    if (!user || !selectedJob) return false;
+    return myApplications.some((app) => app.jobId === Number(selectedJob.id));
+  };
+
   const handleApplyConfirmed = async (coverLetter?: string) => {
     if (!user || !selectedJob) {
       navigate("/auth");
+      return;
+    }
+
+    // ADD THIS CHECK: Prevent applying if already applied
+    if (hasApplied()) {
+      alert("You have already applied to this job.");
       return;
     }
 
@@ -75,13 +99,15 @@ export default function JobDetailsPage() {
         jobId: jobIdNum,
         userId: user.id,
         coverLetter,
-        // note: resumeUrl can be omitted; backend will use profile resume if missing
       });
-      // show a small success (you can replace with toast)
       navigate("/dashboard");
-    } catch (err: any) {
-      // keep simple: show alert (or use your toast)
-      alert(err?.response?.data?.message || err?.message || "Failed to apply");
+    } catch (err: unknown) {
+      alert(
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message ||
+          (err as Error)?.message ||
+          "Failed to apply"
+      );
     } finally {
       setApplyingJob(jobIdNum, false);
       setOpenModal(false);
@@ -120,7 +146,7 @@ export default function JobDetailsPage() {
             </button>
             {id && (
               <button
-                onClick={() => fetchJobById(id)}
+                onClick={() => fetchJobById(Number(id))}
                 className="inline-flex items-center rounded-xl border border-zinc-300 bg-white px-6 py-3 text-sm font-semibold text-zinc-900 hover:bg-zinc-50 transition-colors"
               >
                 Try Again
@@ -134,6 +160,7 @@ export default function JobDetailsPage() {
 
   const jobIdNum = Number(selectedJob.id);
   const applying = applyingJobs[jobIdNum] || false;
+  const alreadyApplied = hasApplied(); // ADD THIS
 
   return (
     <>
@@ -161,9 +188,17 @@ export default function JobDetailsPage() {
                     {selectedJob.company}
                   </p>
                 </div>
-                <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700 capitalize">
-                  {selectedJob.hiringStatus}
-                </span>
+                <div className="flex flex-col items-end gap-2">
+                  <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700 capitalize">
+                    {selectedJob.hiringStatus}
+                  </span>
+                  {/* ADD THIS: Already Applied Badge */}
+                  {alreadyApplied && (
+                    <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">
+                      ✓ Already Applied
+                    </span>
+                  )}
+                </div>
               </div>
 
               <div className="flex flex-wrap gap-4 text-sm text-zinc-600">
@@ -241,22 +276,42 @@ export default function JobDetailsPage() {
                     <p className="text-lg font-semibold text-zinc-900">
                       {new Date(selectedJob.deadline).toLocaleDateString(
                         "en-US",
-                        { year: "numeric", month: "long", day: "numeric" }
+                        {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        }
                       )}
                     </p>
                   </div>
 
                   <div className="flex gap-3 w-full sm:w-auto">
                     <button
-                      onClick={() => setOpenModal(true)}
-                      disabled={applying}
+                      onClick={() => {
+                        if (!user) {
+                          navigate("/auth");
+                          return;
+                        }
+                        // ADD THIS CHECK: Don't open modal if already applied
+                        if (alreadyApplied) {
+                          return;
+                        }
+                        setOpenModal(true);
+                      }}
+                      disabled={applying || alreadyApplied} // ADD alreadyApplied to disabled
                       className={`w-full sm:w-auto inline-flex items-center justify-center rounded-xl px-8 py-3 text-sm font-semibold text-white shadow transition-colors ${
                         applying
                           ? "bg-zinc-200 text-zinc-600 cursor-not-allowed"
+                          : alreadyApplied
+                          ? "bg-green-600 cursor-default" // Different color for applied state
                           : "bg-blue-600 hover:bg-blue-700"
                       }`}
                     >
-                      {applying ? "Applying..." : "Apply Now →"}
+                      {applying
+                        ? "Applying..."
+                        : alreadyApplied
+                        ? "✓ Applied Successfully"
+                        : "Apply Now →"}
                     </button>
                   </div>
                 </div>
@@ -267,7 +322,7 @@ export default function JobDetailsPage() {
       </section>
 
       <CoverLetterModal
-        open={openModal}
+        open={openModal && !alreadyApplied}
         onClose={() => setOpenModal(false)}
         submitting={applying}
         onConfirm={handleApplyConfirmed}
